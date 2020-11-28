@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  taskflow_db:
+    container_name: "taskflow_db"
+    image: postgres:11.5-alpine
+    ports:
+      - "${TASKFLOW_DB_PORT}:${TASKFLOW_DB_PORT}"
+    environment:
+      - POSTGRES_USER=${TASKFLOW_DB_USERNAME}
+      - POSTGRES_PASSWORD=${TASKFLOW_DB_PASSWORD}
+      - POSTGRES_DB=${TASKFLOW_DB_NAME}
