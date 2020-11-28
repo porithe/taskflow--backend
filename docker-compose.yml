@@ -3,7 +3,7 @@ version: '3'
 services:
   taskflow_db:
     container_name: "taskflow_db"
-    image: postgres:11.5-alpine
+    image: postgres:13.1-alpine
     ports:
       - "${TASKFLOW_DB_PORT}:${TASKFLOW_DB_PORT}"
     environment:
