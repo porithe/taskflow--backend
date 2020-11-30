@@ -23,4 +23,20 @@ export class BoardService {
       throw new HttpException(message, status);
     }
   }
+  async findBoards(userUuid: string): Promise<any> {
+    try {
+      return await this.prisma.board.findMany({
+        where: {
+          users: {
+            every: {
+              uuid: userUuid,
+            },
+          },
+        },
+      });
+    } catch (err) {
+      const { message, status } = err;
+      throw new HttpException(message, status);
+    }
+  }
 }

@@ -5,10 +5,15 @@ export interface BoardData {
   name: string;
 }
 
-export class BoardDto {
+export class AddBoardDto {
   @IsUUID('4')
   userUuid: string;
 
   @Length(4)
   name: string;
+}
+
+export class GetAllDto {
+  @IsUUID('4')
+  userUuid: string;
 }
