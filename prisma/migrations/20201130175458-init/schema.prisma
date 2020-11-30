@@ -11,7 +11,7 @@ generator client {
 }
 
 model User {
-  id        String      @id @default(cuid())
+  uuid      String    @id @default(uuid())
   username  String      @unique
   firstName String
   lastName  String
@@ -23,29 +23,29 @@ model User {
 }
 
 model Board {
-  id        String      @id @default(cuid())
+  uuid      String    @id @default(uuid())
   name      String
   users     User[]
   columns   Column[]
 }
 
 model Column {
-  id        String      @id @default(cuid())
+  uuid      String    @id @default(uuid())
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
-  board     Board       @relation(fields: [boardId], references: [id])
-  boardId   String
+  board     Board       @relation(fields: [boardUuid], references: [uuid])
+  boardUuid String
   tasks     Task[]
 }
 
 model Task {
-  id            String      @id @default(cuid())
+  uuid          String    @id @default(uuid())
   author        String
   title         String
   description   String
   position      Int
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
-  column        Column      @relation(fields: [columnId], references: [id])
-  columnId      String
+  column        Column      @relation(fields: [columnUuid], references: [uuid])
+  columnUuid    String
 }

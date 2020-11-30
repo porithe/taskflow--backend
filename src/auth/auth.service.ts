@@ -25,7 +25,7 @@ export class AuthService {
     try {
       const createdUser = await this.userService.createUser(user);
       return {
-        id: createdUser.id,
+        uuid: createdUser.uuid,
         username: createdUser.username,
         email: createdUser.email,
         createdAt: createdUser.createdAt,
@@ -54,9 +54,9 @@ export class AuthService {
   }
 
   async login(user: LoginUserData): Promise<UserLoggedIn> {
-    const payload = { user, sub: user.id };
+    const payload = { user, sub: user.uuid };
     return {
-      id: user.id,
+      uuid: user.uuid,
       username: user.username,
       accessToken: this.jwtService.sign(payload),
     };

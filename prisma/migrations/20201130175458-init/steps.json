@@ -30,7 +30,7 @@
     {
       "tag": "CreateField",
       "model": "User",
-      "field": "id",
+      "field": "uuid",
       "type": "String",
       "arity": "Required"
     },
@@ -40,7 +40,7 @@
         "path": {
           "tag": "Field",
           "model": "User",
-          "field": "id"
+          "field": "uuid"
         },
         "directive": "id"
       }
@@ -51,7 +51,7 @@
         "path": {
           "tag": "Field",
           "model": "User",
-          "field": "id"
+          "field": "uuid"
         },
         "directive": "default"
       }
@@ -63,12 +63,12 @@
         "path": {
           "tag": "Field",
           "model": "User",
-          "field": "id"
+          "field": "uuid"
         },
         "directive": "default"
       },
       "argument": "",
-      "value": "cuid()"
+      "value": "uuid()"
     },
     {
       "tag": "CreateField",
@@ -191,7 +191,7 @@
     {
       "tag": "CreateField",
       "model": "Board",
-      "field": "id",
+      "field": "uuid",
       "type": "String",
       "arity": "Required"
     },
@@ -201,7 +201,7 @@
         "path": {
           "tag": "Field",
           "model": "Board",
-          "field": "id"
+          "field": "uuid"
         },
         "directive": "id"
       }
@@ -212,7 +212,7 @@
         "path": {
           "tag": "Field",
           "model": "Board",
-          "field": "id"
+          "field": "uuid"
         },
         "directive": "default"
       }
@@ -224,12 +224,12 @@
         "path": {
           "tag": "Field",
           "model": "Board",
-          "field": "id"
+          "field": "uuid"
         },
         "directive": "default"
       },
       "argument": "",
-      "value": "cuid()"
+      "value": "uuid()"
     },
     {
       "tag": "CreateField",
@@ -259,7 +259,7 @@
     {
       "tag": "CreateField",
       "model": "Column",
-      "field": "id",
+      "field": "uuid",
       "type": "String",
       "arity": "Required"
     },
@@ -269,7 +269,7 @@
         "path": {
           "tag": "Field",
           "model": "Column",
-          "field": "id"
+          "field": "uuid"
         },
         "directive": "id"
       }
@@ -280,7 +280,7 @@
         "path": {
           "tag": "Field",
           "model": "Column",
-          "field": "id"
+          "field": "uuid"
         },
         "directive": "default"
       }
@@ -292,12 +292,12 @@
         "path": {
           "tag": "Field",
           "model": "Column",
-          "field": "id"
+          "field": "uuid"
         },
         "directive": "default"
       },
       "argument": "",
-      "value": "cuid()"
+      "value": "uuid()"
     },
     {
       "tag": "CreateField",
@@ -379,7 +379,7 @@
         "directive": "relation"
       },
       "argument": "fields",
-      "value": "[boardId]"
+      "value": "[boardUuid]"
     },
     {
       "tag": "CreateArgument",
@@ -393,12 +393,12 @@
         "directive": "relation"
       },
       "argument": "references",
-      "value": "[id]"
+      "value": "[uuid]"
     },
     {
       "tag": "CreateField",
       "model": "Column",
-      "field": "boardId",
+      "field": "boardUuid",
       "type": "String",
       "arity": "Required"
     },
@@ -416,7 +416,7 @@
     {
       "tag": "CreateField",
       "model": "Task",
-      "field": "id",
+      "field": "uuid",
       "type": "String",
       "arity": "Required"
     },
@@ -426,7 +426,7 @@
         "path": {
           "tag": "Field",
           "model": "Task",
-          "field": "id"
+          "field": "uuid"
         },
         "directive": "id"
       }
@@ -437,7 +437,7 @@
         "path": {
           "tag": "Field",
           "model": "Task",
-          "field": "id"
+          "field": "uuid"
         },
         "directive": "default"
       }
@@ -449,12 +449,12 @@
         "path": {
           "tag": "Field",
           "model": "Task",
-          "field": "id"
+          "field": "uuid"
         },
         "directive": "default"
       },
       "argument": "",
-      "value": "cuid()"
+      "value": "uuid()"
     },
     {
       "tag": "CreateField",
@@ -564,7 +564,7 @@
         "directive": "relation"
       },
       "argument": "fields",
-      "value": "[columnId]"
+      "value": "[columnUuid]"
     },
     {
       "tag": "CreateArgument",
@@ -578,12 +578,12 @@
         "directive": "relation"
       },
       "argument": "references",
-      "value": "[id]"
+      "value": "[uuid]"
     },
     {
       "tag": "CreateField",
       "model": "Task",
-      "field": "columnId",
+      "field": "columnUuid",
       "type": "String",
       "arity": "Required"
     }
