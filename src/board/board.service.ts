@@ -1,10 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-
-interface BoardData {
-  userUuid: string;
-  name: string;
-}
+import { BoardData } from '../constants/board';
 
 @Injectable()
 export class BoardService {
