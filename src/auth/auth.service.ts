@@ -1,9 +1,18 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compareSync } from 'bcrypt';
 import { UserService } from '../user/user.service';
-import { CreatedUser, LoginUserData, RegisterUserData, UserLoggedIn } from '../constants/user';
+import {
+  CreatedUser,
+  LoginUserData,
+  RegisterUserData,
+  UserLoggedIn,
+} from '../constants/user';
 import { User } from '@prisma/client';
+
+enum ErrorMessages {
+  USER_NOT_FOUND = 'User not found.',
+}
 
 @Injectable()
 export class AuthService {
@@ -31,6 +40,12 @@ export class AuthService {
     try {
       const user = await this.userService.findOne({ username });
       if (user && compareSync(password, user.password)) return user;
+      if (!user) {
+        throw new HttpException(
+          ErrorMessages.USER_NOT_FOUND,
+          HttpStatus.NOT_FOUND,
+        );
+      }
       return null;
     } catch (err) {
       const { message, status } = err;
