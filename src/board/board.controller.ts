@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { BoardService } from './board.service';
-import { AddBoardDto, GetAllDto } from '../constants/board';
+import { AddBoardDto, GetAllBoardsDto } from '../constants/board';
 import { Board } from '@prisma/client';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
@@ -16,7 +16,7 @@ export class BoardController {
 
   @UseGuards(JwtAuthGuard)
   @Get('getAll/:userUuid')
-  async getBoards(@Param() param: GetAllDto): Promise<Board[]> {
+  async getBoards(@Param() param: GetAllBoardsDto): Promise<Board[]> {
     return this.boardService.findBoards(param.userUuid);
   }
 }

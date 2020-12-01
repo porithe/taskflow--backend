@@ -1,5 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { Board } from '@prisma/client';
 import { BoardData } from '../constants/board';
 
 @Injectable()
@@ -23,7 +24,7 @@ export class BoardService {
       throw new HttpException(message, status);
     }
   }
-  async findBoards(userUuid: string): Promise<any> {
+  async findBoards(userUuid: string): Promise<Board[]> {
     try {
       return await this.prisma.board.findMany({
         where: {

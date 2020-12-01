@@ -30,7 +30,8 @@ model Board {
 }
 
 model Column {
-  uuid      String    @id @default(uuid())
+  uuid      String      @id @default(uuid())
+  name      String
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   board     Board       @relation(fields: [boardUuid], references: [uuid])

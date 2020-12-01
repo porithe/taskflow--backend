@@ -3,7 +3,7 @@
 
 datasource db {
   provider = "postgresql"
-  url      = env("TASKFLOW_DB_URL")
+  url = "***"
 }
 
 generator client {

@@ -13,7 +13,7 @@ export class AddBoardDto {
   name: string;
 }
 
-export class GetAllDto {
+export class GetAllBoardsDto {
   @IsUUID('4')
   userUuid: string;
 }

@@ -302,6 +302,13 @@
     {
       "tag": "CreateField",
       "model": "Column",
+      "field": "name",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Column",
       "field": "createdAt",
       "type": "DateTime",
       "arity": "Required"
