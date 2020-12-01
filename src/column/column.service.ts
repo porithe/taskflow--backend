@@ -1,15 +1,21 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Column } from '@prisma/client';
-import { ColumnData } from '../constants/column';
+import { ColumnData, DeleteColumnData } from '../constants/column';
 import { StatusStrings } from '../constants/status';
 
 @Injectable()
 export class ColumnService {
   constructor(private prisma: PrismaService) {}
 
-  async createColumn(columnData: ColumnData): Promise<Column> {
+  async createColumn(
+    columnData: ColumnData,
+    userUuid: string,
+  ): Promise<Column> {
     try {
+      if (!(await this.isUserOwnerOfBoard(columnData.boardUuid, userUuid))) {
+        throw new HttpException('Forbidden.', HttpStatus.FORBIDDEN);
+      }
       return await this.prisma.column.create({
         data: {
           name: columnData.name,
@@ -29,12 +35,16 @@ export class ColumnService {
   async findColumns(
     boardUuid: string,
     status: StatusStrings,
+    userUuid: string,
   ): Promise<Column[]> {
     try {
+      if (!(await this.isUserOwnerOfBoard(boardUuid, userUuid))) {
+        throw new HttpException('Forbidden.', HttpStatus.FORBIDDEN);
+      }
       return await this.prisma.column.findMany({
         where: {
           boardUuid,
-          status
+          status,
         },
       });
     } catch (err) {
@@ -43,12 +53,18 @@ export class ColumnService {
     }
   }
 
-  async deleteColumn(columnUuid: string): Promise<Column> {
+  async deleteColumn(
+    columnData: DeleteColumnData,
+    userUuid: string,
+  ): Promise<Column> {
     try {
+      if (!(await this.isUserOwnerOfBoard(columnData.boardUuid, userUuid))) {
+        throw new HttpException('Forbidden.', HttpStatus.FORBIDDEN);
+      }
       const status = 'DELETED';
       return await this.prisma.column.update({
         where: {
-          uuid: columnUuid,
+          uuid: columnData.columnUuid,
         },
         data: {
           status,
@@ -58,5 +74,48 @@ export class ColumnService {
       const { message, status } = err;
       throw new HttpException(message, status);
     }
+  }
+
+  async isUserOwnerOfBoard(
+    boardUuid: string,
+    userUuid: string,
+  ): Promise<boolean> {
+    const board = await this.prisma.column.findMany({
+      select: {
+        uuid: true,
+        name: true,
+        createdAt: true,
+        boardUuid: true,
+        board: {
+          include: {
+            users: {
+              select: {
+                uuid: true,
+              },
+            },
+          },
+        },
+      },
+      where: {
+        boardUuid,
+        board: {
+          users: {
+            some: {
+              uuid: userUuid,
+            },
+          },
+        },
+      },
+    });
+    return !!board;
+  }
+
+  async isColumnExist(uuid: string) {
+    const column = await this.prisma.column.findUnique({
+      where: {
+        uuid,
+      },
+    });
+    return !!column;
   }
 }

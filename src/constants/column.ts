@@ -6,6 +6,11 @@ export interface ColumnData {
   boardUuid: string;
 }
 
+export interface DeleteColumnData {
+  boardUuid: string;
+  columnUuid: string;
+}
+
 export class AddColumnDto {
   @IsUUID('4')
   boardUuid: string;
@@ -25,4 +30,7 @@ export class GetAllColumnsDto {
 export class DeleteColumn {
   @IsUUID('4')
   columnUuid: string;
+
+  @IsUUID('4')
+  boardUuid: string;
 }

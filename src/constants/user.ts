@@ -17,6 +17,11 @@ export class RegisterUserDto {
   password: string;
 }
 
+export interface UserRequestJwt {
+  uuid: string;
+  username: string;
+}
+
 export interface RegisterUserData {
   username: string;
   firstName: string;

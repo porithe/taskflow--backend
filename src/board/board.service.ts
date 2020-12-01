@@ -7,14 +7,14 @@ import { BoardData } from '../constants/board';
 export class BoardService {
   constructor(private prisma: PrismaService) {}
 
-  async createBoard(boardData: BoardData) {
+  async createBoard(boardData: BoardData, uuid: string) {
     try {
       return await this.prisma.board.create({
         data: {
           name: boardData.name,
           users: {
             connect: {
-              uuid: boardData.userUuid,
+              uuid,
             },
           },
         },
@@ -39,5 +39,14 @@ export class BoardService {
       const { message, status } = err;
       throw new HttpException(message, status);
     }
+  }
+
+  async isBoardExist(uuid: string) {
+    const board = await this.prisma.board.findUnique({
+      where: {
+        uuid,
+      },
+    });
+    return !!board;
   }
 }
