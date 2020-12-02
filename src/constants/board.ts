@@ -13,3 +13,8 @@ export class GetAllBoardsDto {
   @IsUUID('4')
   userUuid: string;
 }
+
+export class UpdateBoardDto extends AddBoardDto {
+  @IsUUID('4')
+  boardUuid: string;
+}

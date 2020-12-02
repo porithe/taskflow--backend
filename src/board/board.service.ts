@@ -1,13 +1,13 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Board } from '@prisma/client';
-import { BoardData } from '../constants/board';
+import { BoardData, UpdateBoardDto } from '../constants/board';
 
 @Injectable()
 export class BoardService {
   constructor(private prisma: PrismaService) {}
 
-  async createBoard(boardData: BoardData, uuid: string) {
+  async createBoard(boardData: BoardData, uuid: string): Promise<Board> {
     try {
       return await this.prisma.board.create({
         data: {
@@ -41,12 +41,49 @@ export class BoardService {
     }
   }
 
-  async isBoardExist(uuid: string) {
+  async isBoardExist(uuid: string): Promise<boolean> {
     const board = await this.prisma.board.findUnique({
       where: {
         uuid,
       },
     });
     return !!board;
+  }
+
+  async isUserOwnerOfBoard(
+    boardUuid: string,
+    userUuid: string,
+  ): Promise<boolean> {
+    const board = await this.prisma.board
+      .findUnique({
+        where: {
+          uuid: boardUuid,
+        },
+      })
+      .users({
+        where: {
+          uuid: userUuid,
+        },
+      });
+    return board?.length > 0 && board !== null;
+  }
+
+  async editName(boardData: UpdateBoardDto, userUuid: string): Promise<Board> {
+    try {
+      if (!(await this.isUserOwnerOfBoard(boardData.boardUuid, userUuid))) {
+        throw new HttpException('Forbidden.', HttpStatus.FORBIDDEN);
+      }
+      return await this.prisma.board.update({
+        where: {
+          uuid: boardData.boardUuid,
+        },
+        data: {
+          name: boardData.name,
+        },
+      });
+    } catch (err) {
+      const { message, status } = err;
+      throw new HttpException(message, status);
+    }
   }
 }

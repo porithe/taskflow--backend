@@ -19,7 +19,7 @@ export class DoesBoardExistGuard implements CanActivate {
     return this.validateRequest(req);
   }
 
-  async validateRequest(req: { body: any }) {
+  async validateRequest(req: { body: { boardUuid: string } }) {
     if (!(await this.boardService.isBoardExist(req.body.boardUuid)))
       throw new HttpException('Board not found.', HttpStatus.NOT_FOUND);
     return true;
