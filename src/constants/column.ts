@@ -27,10 +27,19 @@ export class GetAllColumnsDto {
   status: Status;
 }
 
-export class DeleteColumn {
+export class DeleteColumnDto {
   @IsUUID('4')
   columnUuid: string;
 
   @IsUUID('4')
   boardUuid: string;
+}
+
+export class UpdateColumnDto {
+  @IsUUID('4')
+  columnUuid: string;
+  @IsUUID('4')
+  boardUuid: string;
+  @Length(4)
+  name: string;
 }

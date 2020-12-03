@@ -4,7 +4,7 @@ import {
   Delete,
   Get,
   Param,
-  Post,
+  Post, Put,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -13,8 +13,8 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Column } from '@prisma/client';
 import {
   AddColumnDto,
-  DeleteColumn,
-  GetAllColumnsDto,
+  DeleteColumnDto,
+  GetAllColumnsDto, UpdateColumnDto,
 } from '../constants/column';
 import { UserRequestJwt } from '../constants/user';
 import { DoesColumnExistGuard } from './doesColumnExist.guard';
@@ -29,21 +29,21 @@ export class ColumnController {
   @Post('add')
   async add(
     @Body() columnData: AddColumnDto,
-    @Request() req: { body: UserRequestJwt },
+    @Request() req: { user: UserRequestJwt },
   ): Promise<Column> {
-    return this.columnService.createColumn(columnData, req.body.uuid);
+    return this.columnService.createColumn(columnData, req.user.uuid);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('getAll/:boardUuid/:status')
   async getColumns(
     @Param() param: GetAllColumnsDto,
-    @Request() req: { body: UserRequestJwt },
+    @Request() req: { user: UserRequestJwt },
   ): Promise<Column[]> {
     return this.columnService.findColumns(
       param.boardUuid,
       param.status,
-      req.body.uuid,
+      req.user.uuid,
     );
   }
 
@@ -51,9 +51,19 @@ export class ColumnController {
   @UseGuards(DoesColumnExistGuard)
   @Delete('delete')
   async delete(
-    @Body() columnData: DeleteColumn,
-    @Request() req: { body: UserRequestJwt },
+    @Body() columnData: DeleteColumnDto,
+    @Request() req: { user: UserRequestJwt },
   ): Promise<Column> {
-    return this.columnService.deleteColumn(columnData, req.body.uuid);
+    return this.columnService.deleteColumn(columnData, req.user.uuid);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(DoesColumnExistGuard)
+  @Put('rename')
+  async updateColumn(
+    @Body() columnData: UpdateColumnDto,
+    @Request() req: { user: UserRequestJwt },
+  ): Promise<Column> {
+    return this.columnService.editName(columnData, req.user.uuid);
   }
 }

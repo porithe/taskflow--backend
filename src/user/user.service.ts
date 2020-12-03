@@ -1,7 +1,11 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { hash } from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { User, UserCreateInput, UserWhereUniqueInput } from '@prisma/client';
+
+interface GetFullName {
+  fullName: string;
+}
 
 @Injectable()
 export class UserService {
@@ -47,5 +51,16 @@ export class UserService {
       },
     });
     return !!user;
+  }
+  async getFullName(userUuid: string): Promise<GetFullName> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        uuid: userUuid,
+      },
+    });
+    if (!user) throw new HttpException('User not found.', HttpStatus.NOT_FOUND);
+    return {
+      fullName: `${user.firstName} ${user.lastName}`,
+    };
   }
 }
