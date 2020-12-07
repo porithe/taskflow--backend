@@ -59,6 +59,9 @@ export class ColumnService {
           boardUuid,
           status,
         },
+        include: {
+          tasks: true,
+        },
       });
     } catch (err) {
       const { message, status } = err;

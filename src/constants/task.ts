@@ -1,4 +1,4 @@
-import { IsUUID, Length } from 'class-validator';
+import { IsOptional, IsUUID, Length } from 'class-validator';
 
 export class AddTaskDto {
   @IsUUID('4')
@@ -9,4 +9,24 @@ export class AddTaskDto {
   title: string;
   @Length(5, 200)
   description: string;
+}
+
+export class EditTaskDto {
+  @IsUUID('4')
+  taskUuid: string;
+  @IsUUID('4')
+  boardUuid: string;
+  @IsOptional()
+  @Length(4, 40)
+  title: string;
+  @IsOptional()
+  @Length(5, 200)
+  description: string;
+}
+
+export class DeleteTaskDto {
+  @IsUUID('4')
+  taskUuid: string;
+  @IsUUID('4')
+  boardUuid: string;
 }

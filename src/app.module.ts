@@ -8,7 +8,6 @@ import { AuthModule } from './auth/auth.module';
 import { BoardModule } from './board/board.module';
 import { ColumnModule } from './column/column.module';
 import { TaskModule } from './task/task.module';
-import { OwnerModule } from './owner/owner.module';
 
 @Module({
   imports: [
@@ -19,7 +18,6 @@ import { OwnerModule } from './owner/owner.module';
     BoardModule,
     ColumnModule,
     TaskModule,
-    OwnerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
