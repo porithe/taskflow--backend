@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { AddTaskDto, DeleteTaskDto, EditTaskDto } from '../constants/task';
+import { AddTaskDto, DeleteTaskDto, EditTaskDto, MovedTasks, MoveTaskDto } from '../constants/task';
 import { Task } from '@prisma/client';
 import { UserService } from '../user/user.service';
 import { ColumnService } from '../column/column.service';
@@ -92,6 +92,49 @@ export class TaskService {
           status: Status.DELETED,
         },
       });
+    } catch (err) {
+      const { message, status } = err;
+      throw new HttpException(message, status);
+    }
+  }
+
+  async moveTask(taskUuid: string, position: number): Promise<any> {
+    return this.prisma.task.update({
+      data: {
+        position,
+      },
+      where: {
+        uuid: taskUuid,
+      },
+    });
+  }
+
+  async moveTasks(
+    { boardUuid, tasks }: MoveTaskDto,
+    userUuid: string,
+  ): Promise<MovedTasks> {
+    try {
+      if (!(await this.boardService.isUserOwnerOfBoard(boardUuid, userUuid))) {
+        throw new HttpException('Forbidden.', HttpStatus.FORBIDDEN);
+      }
+      const positive: string[] = [];
+      const negative: string[] = [];
+      for (const task of tasks) {
+        if (await this.isTaskExist(task.taskUuid)) {
+          const editedTask = await this.moveTask(task.taskUuid, task.position);
+          if (editedTask) {
+            positive.push(editedTask.uuid);
+          } else {
+            negative.push(task.taskUuid);
+          }
+        } else {
+          negative.push(task.taskUuid);
+        }
+      }
+      return {
+        positive,
+        negative,
+      };
     } catch (err) {
       const { message, status } = err;
       throw new HttpException(message, status);

@@ -9,7 +9,12 @@ import {
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { AddTaskDto, DeleteTaskDto, EditTaskDto } from '../constants/task';
+import {
+  AddTaskDto,
+  DeleteTaskDto,
+  EditTaskDto, MovedTasks,
+  MoveTaskDto,
+} from '../constants/task';
 import { UserRequestJwt } from '../constants/user';
 import { Task } from '@prisma/client';
 import { DoesTaskExistGuard } from './doesTaskExist.guard';
@@ -44,5 +49,14 @@ export class TaskController {
     @Request() req: { user: UserRequestJwt },
   ): Promise<Task> {
     return this.taskService.deleteTask(taskData, req.user.uuid);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('moveTasks')
+  async move(
+    @Body() taskData: MoveTaskDto,
+    @Request() req: { user: UserRequestJwt },
+  ): Promise<MovedTasks> {
+    return this.taskService.moveTasks(taskData, req.user.uuid);
   }
 }
