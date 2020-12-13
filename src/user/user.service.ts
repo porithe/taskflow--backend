@@ -11,6 +11,26 @@ interface GetFullName {
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
+  async getUserProfile(userUuid: string): Promise<any> {
+    try {
+      const user = await this.prisma.user.findOne({
+        where: {
+          uuid: userUuid,
+        },
+      });
+      if (!user) {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND)
+      }
+      return {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+      };
+    } catch (err) {
+      const { message, status } = err;
+      throw new HttpException(message, status);
+    }
+  }
   async createUser(data: UserCreateInput): Promise<User> {
     try {
       data.password = await hash(data.password, Number(process.env.SALT));
