@@ -9,6 +9,11 @@ export class AddBoardDto {
   name: string;
 }
 
+export class GetBoardDto {
+  @IsUUID('4')
+  boardUuid: string;
+}
+
 export class GetAllBoardsDto {
   @IsUUID('4')
   userUuid: string;

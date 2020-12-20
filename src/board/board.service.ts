@@ -24,6 +24,23 @@ export class BoardService {
       throw new HttpException(message, status);
     }
   }
+
+  async findBoard(userUuid: string, boardUuid: string): Promise<Board> {
+    try {
+      const board = await this.prisma.board.findUnique({
+        where: {
+          uuid: boardUuid,
+        },
+      });
+      if (!board)
+        throw new HttpException('Board not found.', HttpStatus.NOT_FOUND);
+      return board;
+    } catch (err) {
+      const { message, status } = err;
+      throw new HttpException(message, status);
+    }
+  }
+
   async findBoards(userUuid: string): Promise<Board[]> {
     try {
       return await this.prisma.board.findMany({

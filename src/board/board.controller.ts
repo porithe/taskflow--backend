@@ -5,10 +5,10 @@ import {
   Post,
   UseGuards,
   Request,
-  Put,
+  Put, Param,
 } from '@nestjs/common';
 import { BoardService } from './board.service';
-import { AddBoardDto, UpdateBoardDto } from '../constants/board';
+import { AddBoardDto, GetBoardDto, UpdateBoardDto } from '../constants/board';
 import { Board } from '@prisma/client';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UserRequestJwt } from '../constants/user';
@@ -31,6 +31,12 @@ export class BoardController {
   @Get('getAll')
   async getBoards(@Request() req: { user: UserRequestJwt }): Promise<Board[]> {
     return this.boardService.findBoards(req.user.uuid);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':boardUuid')
+  async getBoard(@Request() req: { user: UserRequestJwt }, @Param() param: GetBoardDto): Promise<Board> {
+    return this.boardService.findBoard(req.user.uuid, param.boardUuid);
   }
 
   @UseGuards(JwtAuthGuard)

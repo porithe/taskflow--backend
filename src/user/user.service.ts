@@ -13,7 +13,7 @@ export class UserService {
 
   async getUserProfile(userUuid: string): Promise<any> {
     try {
-      const user = await this.prisma.user.findOne({
+      const user = await this.prisma.user.findUnique({
         where: {
           uuid: userUuid,
         },
