@@ -51,6 +51,9 @@ export class BoardService {
             },
           },
         },
+        orderBy: {
+          createdAt: 'asc',
+        },
       });
     } catch (err) {
       const { message, status } = err;
