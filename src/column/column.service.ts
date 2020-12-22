@@ -62,6 +62,9 @@ export class ColumnService {
         include: {
           tasks: true,
         },
+        orderBy: {
+          createdAt: 'asc',
+        },
       });
     } catch (err) {
       const { message, status } = err;
