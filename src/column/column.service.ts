@@ -6,7 +6,7 @@ import {
   DeleteColumnData,
   UpdateColumnDto,
 } from '../constants/column';
-import { StatusStrings } from '../constants/status';
+import { Status, StatusStrings } from '../constants/status';
 import { BoardService } from '../board/board.service';
 
 @Injectable()
@@ -60,7 +60,11 @@ export class ColumnService {
           status,
         },
         include: {
-          tasks: true,
+          tasks: {
+            where: {
+              status: Status.ACTIVE,
+            },
+          },
         },
         orderBy: {
           createdAt: 'asc',
