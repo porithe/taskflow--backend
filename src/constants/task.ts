@@ -48,3 +48,12 @@ export interface MovedTasks {
   positive: string[];
   negative: string[];
 }
+
+export class UpdateRelationDto {
+  @IsUUID('4')
+  taskUuid: string;
+  @IsUUID('4')
+  boardUuid: string;
+  @IsUUID('4')
+  columnUuid: string;
+}

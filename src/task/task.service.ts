@@ -1,6 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { AddTaskDto, DeleteTaskDto, EditTaskDto, MovedTasks, MoveTaskDto } from '../constants/task';
+import {
+  AddTaskDto,
+  DeleteTaskDto,
+  EditTaskDto,
+  MovedTasks,
+  MoveTaskDto,
+  UpdateRelationDto,
+} from '../constants/task';
 import { Task } from '@prisma/client';
 import { UserService } from '../user/user.service';
 import { ColumnService } from '../column/column.service';
@@ -135,6 +142,27 @@ export class TaskService {
         positive,
         negative,
       };
+    } catch (err) {
+      const { message, status } = err;
+      throw new HttpException(message, status);
+    }
+  }
+
+  async updateRelation({ boardUuid, taskUuid, columnUuid }: UpdateRelationDto, userUuid: string): Promise<Task> {
+    try {
+      if (!(await this.boardService.isUserOwnerOfBoard(boardUuid, userUuid))) {
+        throw new HttpException('Forbidden.', HttpStatus.FORBIDDEN);
+      }
+      return await this.prisma.task.update({
+        where: { uuid: taskUuid },
+        data: {
+          column: {
+            connect: {
+              uuid: columnUuid,
+            },
+          },
+        },
+      });
     } catch (err) {
       const { message, status } = err;
       throw new HttpException(message, status);

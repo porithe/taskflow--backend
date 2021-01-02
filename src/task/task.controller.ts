@@ -13,7 +13,7 @@ import {
   AddTaskDto,
   DeleteTaskDto,
   EditTaskDto, MovedTasks,
-  MoveTaskDto,
+  MoveTaskDto, UpdateRelationDto,
 } from '../constants/task';
 import { UserRequestJwt } from '../constants/user';
 import { Task } from '@prisma/client';
@@ -58,5 +58,14 @@ export class TaskController {
     @Request() req: { user: UserRequestJwt },
   ): Promise<MovedTasks> {
     return this.taskService.moveTasks(taskData, req.user.uuid);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('updateRelation')
+  async updateRelation(
+    @Body() taskData: UpdateRelationDto,
+    @Request() req: { user: UserRequestJwt },
+  ): Promise<MovedTasks> {
+    return this.taskService.updateRelation(taskData, req.user.uuid);
   }
 }
