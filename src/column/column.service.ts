@@ -64,6 +64,9 @@ export class ColumnService {
             where: {
               status: Status.ACTIVE,
             },
+            orderBy: {
+              position: 'asc',
+            },
           },
         },
         orderBy: {

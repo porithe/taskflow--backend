@@ -4,7 +4,6 @@ import {
   AddTaskDto,
   DeleteTaskDto,
   EditTaskDto,
-  MovedTasks,
   MoveTaskDto,
   UpdateRelationDto,
 } from '../constants/task';
@@ -117,30 +116,47 @@ export class TaskService {
   }
 
   async moveTasks(
-    { boardUuid, tasks }: MoveTaskDto,
+    { boardUuid, taskUuid, newPosition, oldPosition, columnUuid }: MoveTaskDto,
     userUuid: string,
-  ): Promise<MovedTasks> {
+  ): Promise<{ success: boolean }> {
     try {
       if (!(await this.boardService.isUserOwnerOfBoard(boardUuid, userUuid))) {
         throw new HttpException('Forbidden.', HttpStatus.FORBIDDEN);
       }
-      const positive: string[] = [];
-      const negative: string[] = [];
-      for (const task of tasks) {
-        if (await this.isTaskExist(task.taskUuid)) {
-          const editedTask = await this.moveTask(task.taskUuid, task.position);
-          if (editedTask) {
-            positive.push(editedTask.uuid);
-          } else {
-            negative.push(task.taskUuid);
+      const column = await this.prisma.column.findUnique({
+        where: {
+          uuid: columnUuid,
+        },
+        include: {
+          tasks: {
+            where: {
+              status: Status.ACTIVE,
+            },
+          },
+        },
+      });
+      if (column) {
+        await this.moveTask(taskUuid, newPosition);
+        for (const task of column.tasks) {
+          if (task.uuid !== taskUuid) {
+            if (task.position === newPosition && newPosition < oldPosition) {
+              await this.moveTask(task.uuid, task.position + 1);
+            } else if (
+              task.position > newPosition &&
+              task.position < oldPosition
+          ) {
+              await this.moveTask(task.uuid, task.position + 1);
+            } else if (
+              task.position === newPosition &&
+              newPosition > oldPosition
+            ) {
+              await this.moveTask(task.uuid, task.position - 1);
+            }
           }
-        } else {
-          negative.push(task.taskUuid);
         }
       }
       return {
-        positive,
-        negative,
+        success: true,
       };
     } catch (err) {
       const { message, status } = err;

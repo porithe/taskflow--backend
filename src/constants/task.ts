@@ -31,22 +31,14 @@ export class DeleteTaskDto {
   boardUuid: string;
 }
 
-export class TaskToMove {
-  @IsUUID('4')
-  taskUuid: string;
-  @IsNumber()
-  position: number;
-}
-
 export class MoveTaskDto {
   @IsUUID('4')
   boardUuid: string;
-  tasks: TaskToMove[];
-}
-
-export interface MovedTasks {
-  positive: string[];
-  negative: string[];
+  @IsUUID('4')
+  taskUuid: string;
+  columnUuid: string;
+  newPosition: number;
+  oldPosition: number;
 }
 
 export class UpdateRelationDto {
