@@ -36,6 +36,7 @@ export class MoveTaskDto {
   boardUuid: string;
   @IsUUID('4')
   taskUuid: string;
+  @IsUUID('4')
   columnUuid: string;
   newPosition: number;
   oldPosition: number;
@@ -48,4 +49,8 @@ export class UpdateRelationDto {
   boardUuid: string;
   @IsUUID('4')
   columnUuid: string;
+  newPosition: number;
+  oldPosition: number;
+  @IsUUID('4')
+  currentColumnUuid: string;
 }

@@ -164,14 +164,57 @@ export class TaskService {
     }
   }
 
-  async updateRelation({ boardUuid, taskUuid, columnUuid }: UpdateRelationDto, userUuid: string): Promise<Task> {
+  async updateRelation({ boardUuid, taskUuid, columnUuid, newPosition, oldPosition, currentColumnUuid }: UpdateRelationDto, userUuid: string): Promise<Task> {
     try {
       if (!(await this.boardService.isUserOwnerOfBoard(boardUuid, userUuid))) {
         throw new HttpException('Forbidden.', HttpStatus.FORBIDDEN);
       }
+      const currentColumn = await this.prisma.column.findUnique({
+        where: {
+          uuid: currentColumnUuid,
+        },
+        include: {
+          tasks: {
+            where: {
+              status: Status.ACTIVE,
+            },
+          },
+        },
+      });
+      if (currentColumn) {
+        for (const task of currentColumn.tasks) {
+          if (task.uuid !== taskUuid) {
+            if (task.position > oldPosition) {
+              await this.moveTask(task.uuid, task.position - 1);
+            }
+          }
+        }
+      }
+      const nextColumn = await this.prisma.column.findUnique({
+        where: {
+          uuid: columnUuid,
+        },
+        include: {
+          tasks: {
+            where: {
+              status: Status.ACTIVE,
+            },
+          },
+        },
+      });
+      if (nextColumn) {
+        for (const task of nextColumn.tasks) {
+          if (task.position === newPosition) {
+            await this.moveTask(task.uuid, task.position + 1);
+          } else if (task.position > newPosition) {
+            await this.moveTask(task.uuid, task.position + 1);
+          }
+        }
+      }
       return await this.prisma.task.update({
         where: { uuid: taskUuid },
         data: {
+          position: newPosition,
           column: {
             connect: {
               uuid: columnUuid,
